@@ -1,0 +1,23 @@
+[project]
+name = "sample"
+version = "0.1.0"
+description = "Telegram Bot with aiogram"
+authors = [
+    {name = "Tanya"}
+]
+readme = "README.md"
+requires-python = "^3.12"
+dependencies = [
+    "aiogram (>=3.0,<4.0)",
+    "sqlalchemy[asyncio] (>=2.0.41,<3.0.0)",
+    "asyncpg (>=0.30.0,<0.31.0)",
+    "python-dotenv (>=1.1.1,<2.0.0)",
+    "loguru (>=0.7.3,<0.8.0)",
+    "redis (>=6.2.0,<7.0.0)",
+    "pydantic-settings (>=2.10.1,<3.0.0)"
+]
+
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
