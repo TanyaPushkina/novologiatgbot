@@ -1,11 +1,145 @@
-# Не отслеживать файл с токенами
-.env
-
-# Папка с виртуальным окружением
-venv/
-.env/
+# ========== Python: байткод, библиотеки, установщики ==========
 __pycache__/
-*.pyc
+*.py[cod]
+*$py.class
+*.so
 
-# Файлы VSCode
+# Distribution / packaging
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+*.manifest
+*.spec
+
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
+
+# ========== Виртуальное окружение ==========
+.env
+.env.*
+.venv/
+venv/
+env/
+ENV/
+env.bak/
+venv.bak/
+
+# ========== Unit test / coverage reports ==========
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+.pytest_cache/
+cover/
+
+# ========== Translations ==========
+*.mo
+*.pot
+
+# ========== Django/Flask/SQL ==========
+*.log
+local_settings.py
+db.sqlite3
+db.sqlite3-journal
+*.db
+instance/
+.webassets-cache
+
+# ========== Celery ==========
+celerybeat-schedule
+celerybeat.pid
+
+# ========== Redis (локальные данные) ==========
+redisdata/
+
+# ========== Документация ==========
+docs/_build/
+.site
+
+# ========== PyInstaller ==========
+*.manifest
+*.spec
+
+# ========== IDEs и редакторы ==========
 .vscode/
+.idea/
+.spyderproject
+.spyproject
+.ropeproject
+
+# ========== Jupyter/IPython ==========
+.ipynb_checkpoints/
+profile_default/
+ipython_config.py
+
+# ========== Статический анализ кода ==========
+.mypy_cache/
+.dmypy.json
+dmypy.json
+.pyre/
+.pytype/
+.ruff_cache/
+
+# ========== Poetry / Pipenv / pdm ==========
+poetry.lock
+Pipfile.lock
+pdm.lock
+.pdm.toml
+.pdm-python
+.pdm-build/
+__pypackages__/
+
+# ========== PyBuilder ==========
+.pybuilder/
+target/
+
+# ========== Alembic (если генерируются миграции) ==========
+alembic/versions/*.pyc
+
+# ========== Docker ==========
+*.log
+*.pid
+docker-compose.override.yml
+.docker/
+
+# ========== PyPI config ==========
+.pypirc
+
+# ========== Cursor ==========
+.cursorignore
+.cursorindexingignore
+
+# ========== Абстра (если используется) ==========
+.abstra/
+
+# ========== Telegram / Aiogram logs ==========
+logs/
+*.session
+*.session-journal
+
+# ========== Общие скрытые системные ==========
+.DS_Store
+Thumbs.db
