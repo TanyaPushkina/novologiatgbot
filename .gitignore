@@ -93,6 +93,8 @@ uv.lock
 
 # poetry
 poetry.lock
+# poetry
+**/poetry.lock
 
 # pdm
 pdm.lock
