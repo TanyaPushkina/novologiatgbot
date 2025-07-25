@@ -9,7 +9,7 @@ from aiogram.client.default import DefaultBotProperties
 from app.keyboards.reply import main_menu
 from app.handlers.courses import router as courses_router
 from app.handlers.register import router as register_router, start_register
-from app.core.settings import settings
+from app.core.session import settings
 from aiogram.fsm.context import FSMContext
 from loguru import logger
 

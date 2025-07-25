@@ -1,17 +1,4 @@
-"""from aiogram import Router, types
-from aiogram.filters import CommandStart
-from app.keyboards.reply import main_menu
 
-router = Router()
-
-@router.message(CommandStart())
-async def start_handler(message: types.Message):
-    #await message.answer("Привет, это сайт школы Новология.")
-    await message.answer(
-    "Привет, это бот школы Новология!\n"
-    "Я помогу вам выбрать курс и записаться.",
-    reply_markup=main_menu
-    )"""
 from aiogram import Router, types
 from aiogram.filters import CommandStart
 from sqlalchemy.ext.asyncio import AsyncSession
