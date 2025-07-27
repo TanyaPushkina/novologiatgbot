@@ -80,20 +80,6 @@ async def get_age(message: Message, state: FSMContext):
     await state.set_state(RegisterForm.course)
 
 
-"""@router.callback_query(F.data.startswith("select_course_"))
-async def course_selected(callback: CallbackQuery, state: FSMContext):
-    data = await state.get_data()
-    course_code = callback.data
-    course = data["courses_map"].get(course_code)
-
-    if not course:
-        await callback.message.answer("Ошибка: курс не найден.")
-        return
-
-    await state.update_data(course=course)
-    await callback.message.edit_reply_markup()
-    await callback.message.answer("Укажи свой телефон или email для связи:")
-    await state.set_state(RegisterForm.contact)"""
 @router.callback_query(F.data.startswith("select_course_"))
 async def course_selected(callback: CallbackQuery, state: FSMContext):
     data = await state.get_data()
@@ -108,13 +94,11 @@ async def course_selected(callback: CallbackQuery, state: FSMContext):
 
     await state.update_data(course=course)
 
-    # Убираем старую клавиатуру
     await callback.message.edit_reply_markup()
 
-    # ✅ Показываем выбранный курс
     await callback.message.answer(f"✅ Вы выбрали курс: <b>{course}</b>", parse_mode="HTML")
 
-    # Переход к следующему этапу
+    
     await callback.message.answer("Укажи свой телефон или email для связи:")
     await state.set_state(RegisterForm.contact)
 

@@ -23,15 +23,12 @@ bot = Bot(token=BOT_TOKEN, default=DefaultBotProperties(parse_mode="HTML"))
 storage = MemoryStorage()
 dp = Dispatcher(storage=storage)
 
-# Удаляем все предыдущие логгеры и настраиваем вывод в терминал
 logger.remove()
 logger.add(sys.stdout, format="{time:YYYY-MM-DD HH:mm:ss} | {level} | {message}", level="INFO")
 
-# Роутеры
 dp.include_router(courses_router)
 dp.include_router(register_router)
 
-# Help text
 help_text = (
     "📋 <b>Доступные команды:</b>\n\n"
     "/start — Старт\n"

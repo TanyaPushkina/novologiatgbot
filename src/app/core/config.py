@@ -5,7 +5,7 @@ class Settings(BaseSettings):
     DATABASE_URL: str
     REDIS_HOST: str
     REDIS_PORT: int
-    ADMIN_ID: int  # 👈 здесь ключ
+    ADMIN_ID: int  
 
     model_config = SettingsConfigDict(
         env_file=".env",
