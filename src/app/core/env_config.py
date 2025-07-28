@@ -6,6 +6,7 @@ class Settings(BaseSettings):
     REDIS_HOST: str
     REDIS_PORT: int
     ADMIN_ID: int  
+    PARSE_MODE: str = "HTML"  
 
     model_config = SettingsConfigDict(
         env_file=".env",
