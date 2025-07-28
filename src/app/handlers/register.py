@@ -4,7 +4,7 @@ from aiogram.types import Message, CallbackQuery, InlineKeyboardMarkup, InlineKe
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import StatesGroup, State
 from app.models.data import courses_by_age
-from app.core.config import settings
+from app.core.env_config import settings
 from app.keyboards.reply import main_menu
 
 router = Router()
@@ -59,11 +59,17 @@ async def get_age(message: Message, state: FSMContext):
             min_age = int(age_group.replace("+ лет", "").strip())
             if age >= min_age:
                 suitable_courses.extend(courses)
-
     if not suitable_courses:
+        await message.answer(
+            "😔 К сожалению, курсов для этого возраста нет. Попробуй ввести другой возраст (от 3 до 100):"
+            )
+        await state.set_state(RegisterForm.age)  # оставить в этом же состоянии
+        return
+
+    '''if not suitable_courses:
         await message.answer("К сожалению, подходящих курсов не найдено.")
         await state.clear()
-        return
+        return'''
 
     # Сохраняем коды для callback
     courses_map = {f"select_course_{i}": c for i, c in enumerate(suitable_courses)}
