@@ -5,7 +5,7 @@ from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import StatesGroup, State
 from app.constants.courses import courses_by_age
 from app.core.env_config import settings
-from app.keyboards.reply import main_menu
+from app.keyboards import MainMenuKeyboard
 
 router = Router()
 
@@ -119,7 +119,7 @@ async def get_contact(message: types.Message, state: FSMContext):
         f"Ты записан(а) на курс: <b>{data['course']}</b>.\n"
         f"📞 Мы свяжемся с тобой по: {data['contact']}",
         parse_mode="HTML",
-        reply_markup=main_menu
+        reply_markup=MainMenuKeyboard.get()  # <-- исправлено здесь
     )
 
     # Отправка админу
@@ -133,5 +133,3 @@ async def get_contact(message: types.Message, state: FSMContext):
     await message.bot.send_message(settings.ADMIN_ID, admin_msg, parse_mode="HTML")
 
     await state.clear()
-
-

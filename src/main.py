@@ -1,5 +1,5 @@
 import asyncio
-from app.core.bot_runner import BotRunner
+from app.core import BotRunner
 from app.core.env_config import settings
 
 async def main():

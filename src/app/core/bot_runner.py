@@ -2,14 +2,16 @@ from aiogram import Bot, Dispatcher, types
 from aiogram.client.default import DefaultBotProperties
 from aiogram.fsm.storage.memory import MemoryStorage
 from aiogram.fsm.context import FSMContext
-from aiogram.filters import CommandStart, Command
+from aiogram.filters import Command, CommandStart
 from loguru import logger
 
 from app.core.env_config import settings
 from app.logger.logger_config import setup_logger
-from app.keyboards.reply import main_menu
+
+from app.keyboards import MainMenuKeyboard
 from app.handlers.courses import router as courses_router
 from app.handlers.register import router as register_router, start_register
+from app.handlers.start import StartHandler
 
 
 class BotRunner:
@@ -22,17 +24,12 @@ class BotRunner:
         self.dp = Dispatcher(storage=MemoryStorage())
 
     def register_routers(self):
+        # Включаем все роутеры
         self.dp.include_router(courses_router)
         self.dp.include_router(register_router)
+        self.dp.include_router(StartHandler().router)
 
-        @self.dp.message(CommandStart())
-        async def start_handler(message: types.Message):
-            await message.answer(
-                "Привет, это бот школы Новология!\n"
-                "Я помогу вам выбрать курс и записаться.",
-                reply_markup=main_menu
-            )
-
+        # Обработка команды /help
         @self.dp.message(Command("help"))
         async def help_handler(message: types.Message):
             help_text = (
@@ -42,8 +39,9 @@ class BotRunner:
                 "/courses — Список курсов\n"
                 "/register — Запись на курс"
             )
-            await message.answer(help_text, parse_mode="HTML")
+            await message.answer(help_text)
 
+        # Обработка кнопки "ℹ Регистрация"
         @self.dp.message(lambda msg: msg.text == "ℹ Регистрация")
         async def start_registration_from_button(message: types.Message, state: FSMContext):
             await start_register(message, state)

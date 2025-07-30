@@ -1,37 +1,14 @@
-'''from typing import Optional
+from app.models import User
+from app.repositories.crud.base import BaseRepository
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select
-from app.models.user import User
-
-
-class UserRepository:
-    def __init__(self, session: AsyncSession):
-        self.session = session
-
-    async def get_by_telegram_id(self, telegram_id: int) -> Optional[User]:
-        result = await self.session.execute(
-            select(User).where(User.telegram_id == telegram_id)
-        )
-        return result.scalar_one_or_none()
-
-    async def create(self, telegram_id: int, name: str) -> User:
-        user = User(telegram_id=telegram_id, name=name)
-        self.session.add(user)
-        await self.session.commit()
-        await self.session.refresh(user)
-        return user
-'''
-# app/repositories/user_repository.py
-from app.models.user import User
-from crud.base import BaseRepository
-from sqlalchemy import select
 
 
 class UserRepository(BaseRepository[User]):
-    def __init__(self, session):
+    def __init__(self, session: AsyncSession):
         super().__init__(User, session)
 
-    async def get_by_telegram_id(self, telegram_id: int):
+    async def get_by_telegram_id(self, telegram_id: int) -> User | None:
         result = await self.session.execute(
             select(User).where(User.telegram_id == telegram_id)
         )
@@ -40,3 +17,9 @@ class UserRepository(BaseRepository[User]):
     async def create(self, telegram_id: int, name: str) -> User:
         user = User(telegram_id=telegram_id, name=name)
         return await self.add(user)
+
+    async def get_or_create(self, telegram_id: int, name: str | None) -> User:
+        user = await self.get_by_telegram_id(telegram_id)
+        if user is None:
+            user = await self.create(telegram_id, name or "Unknown")
+        return user
