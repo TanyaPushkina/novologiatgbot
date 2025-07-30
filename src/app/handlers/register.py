@@ -3,7 +3,7 @@ from aiogram import Router, F, types
 from aiogram.types import Message, CallbackQuery, InlineKeyboardMarkup, InlineKeyboardButton
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import StatesGroup, State
-from app.models.data import courses_by_age
+from app.constants.courses import courses_by_age
 from app.core.env_config import settings
 from app.keyboards.reply import main_menu
 

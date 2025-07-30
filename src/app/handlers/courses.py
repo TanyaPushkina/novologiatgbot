@@ -1,6 +1,6 @@
 from aiogram import types, Router
 from aiogram.filters.command import Command
-from app.models.data import courses_by_age
+from app.constants.courses import courses_by_age
 
 router = Router()
 
