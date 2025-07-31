@@ -1,2 +1,4 @@
 from .bot_runner import BotRunner
-__all__ = ["BotRunner"]
+from .base import Base
+
+__all__ = ["BotRunner", "Base"]

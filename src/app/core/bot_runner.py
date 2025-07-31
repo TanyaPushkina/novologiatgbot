@@ -4,7 +4,6 @@ from aiogram.fsm.storage.memory import MemoryStorage
 from aiogram.fsm.context import FSMContext
 from aiogram.filters import Command, CommandStart
 from loguru import logger
-
 from app.core.env_config import settings
 from app.logger.logger_config import setup_logger
 
