@@ -9,7 +9,7 @@ class StartHandler:
         self.router = Router()
         self.router.message(CommandStart())(self.start)
 
-    async def start(self, message: Message):
+    async def start(self, message: Message) -> None:
         await message.answer(
             "Привет, это бот школы Новология!\n"
             "Я помогу вам выбрать курс и записаться.",

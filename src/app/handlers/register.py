@@ -4,7 +4,7 @@ from aiogram.types import Message, CallbackQuery, InlineKeyboardMarkup, InlineKe
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import StatesGroup, State
 from app.constants.courses import courses_by_age
-from app.core.env_config import settings
+from app.core.settings import settings
 from app.keyboards import MainMenuKeyboard
 
 router = Router()
