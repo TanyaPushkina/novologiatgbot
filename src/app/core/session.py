@@ -11,8 +11,8 @@ from app.core.base import Base  # declarative_base() со всеми модел�
 
 # Создаём асинхронный движок с MySQL
 engine = create_async_engine(
-    settings.db.url,
-    echo=True,  # лог SQL-запросов, отключить на проде
+    settings.DATABASE_URL,  # ✅ правильно
+    echo=True,
 )
 
 # Асинхронная фабрика сессий

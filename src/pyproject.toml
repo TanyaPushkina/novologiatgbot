@@ -14,7 +14,9 @@ dependencies = [
     "sqlalchemy (>=2.0.42,<3.0.0)",
     "pydantic-settings (>=2.10.1,<3.0.0)",
     "aiomysql (>=0.2.0,<0.3.0)",
-    "redis (>=6.2.0,<7.0.0)"
+    "redis (>=6.2.0,<7.0.0)",
+    "databases (>=0.9.0,<0.10.0)",
+    "cryptography (>=45.0.5,<46.0.0)"
 ]
 
 
@@ -68,3 +70,7 @@ relative-imports-order = "closest-to-furthest"
 
 [tool.ruff.lint.mccabe]
 max-complexity = 5
+
+[tool.poetry.group.dev.dependencies]
+alembic = "^1.16.4"
+
