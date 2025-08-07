@@ -73,4 +73,6 @@ max-complexity = 5
 
 [tool.poetry.group.dev.dependencies]
 alembic = "^1.16.4"
+[tool.pytest.ini_options]
+pythonpath = ["."]
 

@@ -1,25 +1,23 @@
-from bot_runner import BotRunner
 import pytest
-class MockMessage:
-    def __init__(self):
-        self.text = "/help"
-        self.replied_text = None
-
-    async def answer(self, text, parse_mode=None):
-        self.replied_text = text
+from aiogram import types
+from datetime import datetime
+from unittest.mock import AsyncMock, patch
+from app.handlers.help import help_handler  
 
 @pytest.mark.asyncio
-async def test_help_command():
-    runner = BotRunner()
-    runner.register_routers()
+async def test_help_handler_direct_call():
+    message = types.Message(
+        message_id=1,
+        from_user=types.User(id=123, is_bot=False, first_name="Test"),
+        chat=types.Chat(id=123, type="private"),
+        date=datetime.now(),
+        message_thread_id=None,
+        text="/help"
+    )
 
-    message = MockMessage()
+    with patch.object(types.Message, "answer", new_callable=AsyncMock) as mock_answer:
+        await help_handler(message)
 
-    # Найдём и выполним нужный хендлер
-    for handler in runner.dp.message.handlers:
-        if handler.filters and any(f.key == "command" and f.value == "help" for f in handler.filters):
-            await handler.callback(message)
-            break
-
-    assert message.replied_text is not None
-    assert "Доступные команды" in message.replied_text
+        mock_answer.assert_called_once()
+        called_text = mock_answer.call_args.args[0]
+        assert "Доступные команды" in called_text
