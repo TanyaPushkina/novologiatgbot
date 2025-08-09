@@ -246,7 +246,7 @@ async def contact_cancel_on_command(message: Message, state: FSMContext):
 async def contact_cancel_on_word(message: Message, state: FSMContext):
     await state.clear()
     await message.answer("Регистрация отменена.", reply_markup=MainMenuKeyboard.get())
-
+'''
 # --- основной шаг с валидацией контакта ---
 @router.message(RegisterForm.contact)
 async def get_contact(message: types.Message, state: FSMContext):
@@ -291,6 +291,60 @@ async def get_contact(message: types.Message, state: FSMContext):
         f"📚 Курс: {data['course']}\n"
         f"📞 Контакт: {data['contact']}"
     )
-    await message.bot.send_message(settings.ADMIN_ID, admin_msg, parse_mode="HTML")
+    await message.bot.send_message(settings.bot.admin_id, admin_msg, parse_mode="HTML")
 
+
+    await state.clear()'''
+@router.message(RegisterForm.contact)
+async def get_contact(message: types.Message, state: FSMContext):
+    contact = message.text.strip()
+
+    # --- Валидация ---
+    is_email = re.fullmatch(r"[a-zA-Z0-9._%+-]+@(gmail\.com|mail\.ru)", contact)
+    is_phone = re.fullmatch(r"\+7\d{10}", contact)
+
+    if not (is_email or is_phone):
+        await message.answer(
+            "❌ Введи корректный email (например, tata@gmail.com или tata@mail.ru) "
+            "или номер телефона в формате +7XXXXXXXXXX."
+        )
+        return
+
+    # --- Сохраняем данные в state ---
+    await state.update_data(contact=contact)
+    data = await state.get_data()
+
+    # --- Сохраняем пользователя в БД ---
+    async with async_session_maker() as session:
+        repo = UserRepository(session)
+        await repo.get_or_create(
+            telegram_id=message.from_user.id,
+            name=data.get("name") or (message.from_user.full_name or "Unknown"),
+        )
+        await session.commit()  # ✅ фикс: коммит гарантированно
+
+    # --- Ответ пользователю ---
+    await message.answer(
+        f"✅ Спасибо, {data['name']}!\n"
+        f"Ты записан(а) на курс: <b>{data['course']}</b>.\n"
+        f"📞 Мы свяжемся с тобой по: {data['contact']}",
+        parse_mode="HTML",
+        reply_markup=MainMenuKeyboard.get()
+    )
+
+    # --- Уведомление админу ---
+    admin_msg = (
+        f"<b>Новая заявка</b>\n\n"
+        f"👤 Имя: {data['name']}\n"
+        f"🔢 Возраст: {data['age']}\n"
+        f"📚 Курс: {data['course']}\n"
+        f"📞 Контакт: {data['contact']}"
+    )
+
+    try:
+        await message.bot.send_message(settings.bot.admin_id, admin_msg, parse_mode="HTML")
+    except Exception as e:
+        print(f"[WARN] Не удалось отправить сообщение админу: {e}")
+
+    # --- Чистим state ---
     await state.clear()

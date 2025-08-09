@@ -75,19 +75,22 @@ from app.handlers.start import StartHandler
 
 class BotRunner:
     def __init__(self) -> None:
+        # ✅ берём токен из settings.bot.bot_token
         self.bot: Bot = Bot(
-            token=settings.BOT_TOKEN,
+            token=settings.bot.bot_token,
             default=DefaultBotProperties(parse_mode="HTML"),
         )
 
-        # 🔁 Redis вместо памяти
-        redis_url = f"redis://{settings.REDIS_HOST}:{settings.REDIS_PORT}"
-        self.dp: Dispatcher = Dispatcher(storage=RedisStorage.from_url(redis_url))
+        # ✅ Redis URL из settings.redis.url
+        self.dp: Dispatcher = Dispatcher(
+            storage=RedisStorage.from_url(settings.redis.url)
+        )
 
     def register_routers(self) -> None:
+        # ✅ чтобы /start всегда перехватывался — регистрируем StartHandler раньше
+        self.dp.include_router(StartHandler().router)
         self.dp.include_router(courses_router)
         self.dp.include_router(register_router)
-        self.dp.include_router(StartHandler().router)
 
         @self.dp.message(Command("help"))
         async def help_handler(message: types.Message) -> None:
@@ -109,4 +112,3 @@ class BotRunner:
         self.register_routers()
         logger.info("✅ Бот запускается...")
         await self.dp.start_polling(self.bot)
-
