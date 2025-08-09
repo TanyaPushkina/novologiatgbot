@@ -1,10 +1,12 @@
-from sqlalchemy.orm import DeclarativeBase
-from sqlalchemy.ext.declarative import declared_attr
-from sqlalchemy import Column, Integer
+
+from sqlalchemy.orm import DeclarativeBase, declared_attr, Mapped, mapped_column
+from sqlalchemy import Integer
 
 class Base(DeclarativeBase):
-    @declared_attr
+    @declared_attr.directive
     def __tablename__(cls) -> str:
-        return cls.__name__.lower()
+       
+        return cls.__name__.lower() + "s"
 
-    id = Column(Integer, primary_key=True)
+    
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)

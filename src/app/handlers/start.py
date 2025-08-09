@@ -1,7 +1,7 @@
 from aiogram import Router
 from aiogram.filters import CommandStart
 from aiogram.types import Message
-from aiogram.fsm.context import FSMContext  # <-- добавить импорт
+from aiogram.fsm.context import FSMContext  
 
 from app.keyboards import MainMenuKeyboard
 
@@ -10,8 +10,8 @@ class StartHandler:
         self.router = Router()
         self.router.message(CommandStart())(self.start)
 
-    async def start(self, message: Message, state: FSMContext) -> None:  # <-- добавить state
-        await state.clear()  # <-- ключевая строка
+    async def start(self, message: Message, state: FSMContext) -> None:  
+        await state.clear()  
         await message.answer(
             "Привет, это бот школы Новология!\n"
             "Я помогу вам выбрать курс и записаться.",

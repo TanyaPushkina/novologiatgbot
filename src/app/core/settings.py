@@ -1,19 +1,4 @@
-'''from pydantic_settings import BaseSettings
 
-
-class Settings(BaseSettings):
-    BOT_TOKEN: str
-    ADMIN_ID: int
-    DATABASE_URL: str
-    REDIS_HOST: str
-    REDIS_PORT: int
-
-    class Config:
-        env_file = ".env"
-
-
-settings = Settings()'''
-# app/core/settings.py
 from typing import Optional
 from pydantic_settings import BaseSettings, SettingsConfigDict
 from pydantic import Field
@@ -25,7 +10,7 @@ class BotSettings(BaseSettings):
 
 class DatabaseSettings(BaseSettings):
     model_config = SettingsConfigDict(env_file=".env", extra="ignore")
-    database_url: str = Field(alias="DATABASE_URL")  # mysql+aiomysql://user:pass@host:3306/novologiatgbot
+    database_url: str = Field(alias="DATABASE_URL") 
 
 class RedisSettings(BaseSettings):
     model_config = SettingsConfigDict(env_file=".env", extra="ignore")
@@ -36,7 +21,7 @@ class RedisSettings(BaseSettings):
 
     @property
     def url(self) -> str:
-        # redis://[:password]@host:port/db
+       
         if self.password:
             return f"redis://:{self.password}@{self.host}:{self.port}/{self.db}"
         return f"redis://{self.host}:{self.port}/{self.db}"
