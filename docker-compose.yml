@@ -1,28 +1,54 @@
-volumes:
-  pg_data:
-
 services:
-  redis:
-    image: redis:latest
-    container_name: redis_container
-    environment:
-      - ALLOW_EMPTY_PASSWORD=yes
-    ports:
-      - '6379:6379'
-    volumes:
-      - ./redisdata:/data
-  db:
-    container_name: scid-db
-    image: postgres:13
-    restart: on-failure
-    env_file: .env
-    volumes:
-      - pg_data:/var/lib/postgresql/data
   bot:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    working_dir: /app
+    # Use env_file for secrets like BOT_TOKEN, ADMIN_ID
+    env_file:
+      - ./src/.env
+    environment:
+      # Override hosts for services inside the Compose network
+      DATABASE_URL: mysql+aiomysql://appuser:${MYSQL_PASSWORD:-apppass}@db:3306/novologiatgbot
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
     depends_on:
-      - db
-    container_name: scid-bot
-    # build: .  # раскомментить для работы локально
-    image: greenvibe/scid_bot_3
-    command: bash -c "cd app && poetry run alembic upgrade head && poetry run python main.py"
-    env_file: .env
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    restart: unless-stopped
+
+  db:
+    image: mysql:8.4
+    environment:
+      MYSQL_DATABASE: novologiatgbot
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-rootpass}
+      MYSQL_USER: appuser
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-apppass}
+    ports:
+      - "3306:3306"
+    volumes:
+      - dbdata:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-uroot", "-p${MYSQL_ROOT_PASSWORD:-rootpass}"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 20s
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    volumes:
+      - rediscache:/data
+
+volumes:
+  dbdata:
+  rediscache:

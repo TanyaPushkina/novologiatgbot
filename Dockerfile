@@ -1,29 +1,27 @@
-FROM python:3.12.0
+# syntax=docker/dockerfile:1
+FROM python:3.12-slim
+
+# System deps (optional, keep minimal)
+RUN apt-get update && apt-get install -y --no-install-recommends         build-essential         curl         && rm -rf /var/lib/apt/lists/*
+
+# Install Poetry to manage dependencies
+RUN pip install --no-cache-dir --upgrade pip && pip install --no-cache-dir "poetry==1.8.3"
+
+# We want Poetry to install into the system site-packages (no venv inside container)
+ENV POETRY_VIRTUALENVS_CREATE=false         PYTHONDONTWRITEBYTECODE=1         PYTHONUNBUFFERED=1
+
 WORKDIR /app
 
-# Установка необходимых системных зависимостей (если нужно)
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    curl \
-    && apt-get clean \
-    && rm -rf /var/lib/apt/lists/*
+# Copy only dependency files first for better caching
+COPY src/pyproject.toml ./pyproject.toml
+# If you use a lock file, copy it too for reproducible builds
+COPY src/poetry.lock ./poetry.lock
 
-# Установка Poetry
-RUN curl -sSL https://install.python-poetry.org | python3 -
+# Install dependencies (no project code yet)
+RUN poetry install --no-root --no-interaction --no-ansi
 
-# Установка пути для Poetry
-ENV PATH="/root/.local/bin:$PATH"
+# Copy application source
+COPY src/ ./
 
-# Копирование только pyproject.toml
-COPY pyproject.toml ./
-
-# указываем poetry использовать venv проекта
-RUN  poetry config virtualenvs.in-project true
-
-# Установка зависимостей
-RUN poetry install --no-root
-
-# Копирование остальных файлов, включая alembic
-COPY . .
-
-# Команда для запуска приложения
-CMD ["poetry", "run", "python", "src/main.py"]
+# Default command: run the bot
+CMD ["python", "main.py"]
